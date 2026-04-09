@@ -117,15 +117,58 @@ Atuadores:
 
 ## 4. Diagrama da Arquitetura da Solução
 
-[Sensores Vestíveis]
-↓
-[Gateway / Edge Computing]
-↓
-[Plataforma IoT (Cloud)]
-↓
-[Dashboard / Aplicação Médica]
-↓
-[Equipe Médica]
+```mermaid
+flowchart TB
+	subgraph C1[Camada 1 - Aquisição de Dados Fisiológicos]
+		W1[Sensores Vestíveis\nFC, SpO2, Pressão Arterial]
+	end
+
+	subgraph C2[Camada 2 - Comunicação de Dados]
+		N1[BLE / Wi-Fi / eSIM]
+	end
+
+	subgraph C3[Camada 3 - Processamento em Borda]
+		E1[Nó de Borda Hospitalar]
+		E2[Processamento Local\nDetecção de Anomalias]
+		E1 --> E2
+	end
+
+	subgraph C4[Camada 4 - Plataforma IoT em Nuvem]
+		P1[Ingestão de Dados]
+		P2[Armazenamento e Análise]
+		P3[Digital Twin do Paciente]
+		P1 --> P2 --> P3
+	end
+
+	subgraph C5[Camada 5 - Visualização e Apoio à Decisão]
+		V1[Painel Clínico Web/Mobile]
+		V2[Alertas Inteligentes]
+		V3[Equipe Médica]
+		V1 --> V3
+		V2 --> V3
+	end
+
+	W1 --> N1 --> E1 --> P1 --> V1
+	E2 --> V2
+	P3 --> V2
+```
+
+### 4.1 Fluxo de Alertas Críticos
+
+```mermaid
+flowchart LR
+	A[Coleta de Sinais Vitais] --> B[Validação no Nó de Borda]
+	B --> C{Anomalia Detectada?}
+	C -- Não --> D[Armazenar e Atualizar Painel]
+	C -- Sim --> E[Classificar Severidade]
+	E --> F{Nível Crítico?}
+	F -- Sim --> G[Gerar Alerta Prioritário]
+	F -- Não --> H[Gerar Alerta Moderado]
+	G --> I[Notificar Equipe Médica]
+	H --> I
+	I --> J[Confirmação de Recebimento]
+	J --> K[Registro para Auditoria e Melhoria Contínua]
+```
 
 ---
 
